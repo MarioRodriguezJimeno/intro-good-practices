@@ -1,8 +1,12 @@
-Name: 🎁 Feature Request
-About: Want something new?	
-Labels: "kind/feature,status/triage"
-Assignees: ""
+---
  
+name: '🎁 Feature Request'
+about: Want something new?
+title: '[FEATURE]: '
+labels: ''
+assignees: ''
+ 
+---
 ## Issue Kind
  
 What best describes this issue?

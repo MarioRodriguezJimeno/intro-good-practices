@@ -1,8 +1,12 @@
-Name: 🐞 Bug Report
-About: Poetry not working the way it is documented?
-Labels: "kind/bug,status/triage"
-Assignees: ""
+---
  
+name: '🐞 Bug Report'
+about: Poetry not working the way it is documented?
+title: '[BUG]: '
+labels: ''
+assignees: ''
+ 
+---
 ## Description
  
 Please describe what happened, with as much pertinent information as you can. Feel free to use markdown syntax
