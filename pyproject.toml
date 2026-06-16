@@ -1,0 +1,17 @@
+[project]
+name = "intro-good-practices"
+version = "0.1.0"
+description = "test"
+authors = [
+    {name = "MarioRodriguezJimeno",email = "mrodrjim@emeal.nttdata.com"}
+]
+license = "Apache-2.0"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
