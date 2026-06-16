@@ -1,11 +1,9 @@
 ---
- 
 name: '🎁 Feature Request'
 about: Want something new?
 title: '[FEATURE]: '
 labels: ''
 assignees: ''
- 
 ---
 ## Issue Kind
  

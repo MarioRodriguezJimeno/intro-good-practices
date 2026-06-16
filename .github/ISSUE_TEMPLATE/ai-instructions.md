@@ -1,5 +1,4 @@
 ---
- 
 name: '🤖 IA (AI Instructions)'
 about: Define instructions for agents, automation, or AI-related tools
 title: '[IA]: '

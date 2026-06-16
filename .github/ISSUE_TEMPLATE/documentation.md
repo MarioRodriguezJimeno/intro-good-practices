@@ -1,11 +1,9 @@
 ---
- 
 name: '📚 Documentation Issue'
 about: Did you find errors, omissions, or anything unintelligible in the documentation?
 title: '[DOCUMENTATION]: '
 labels: ''
 assignees: ''
- 
 ---
  
 ## Issue Kind
