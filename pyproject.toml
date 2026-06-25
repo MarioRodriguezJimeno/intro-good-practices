@@ -3,7 +3,7 @@ name = "poetry-demo"
 version = "0.1.0"
 description = ""
 authors = [
-    {name = "AlejandroThomasOliva",email = "athomaso@emeal.nttdata.com"}
+    {name = "MarioRodriguezJimeno",email = "mrodrjim@emeal.nttdata.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.13"
