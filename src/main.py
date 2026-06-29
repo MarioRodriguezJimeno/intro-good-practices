@@ -14,7 +14,7 @@ TIMEOUT_SECONDS = 5.0
  
 @app.get("/")
 async def get_github_status() -> dict[str, Any]:
-    last_error_detail = "Unknown error"
+    last_error_detail: str | None = None
  
     async with httpx.AsyncClient(timeout=TIMEOUT_SECONDS) as client:
         for attempt in range(1, MAX_RETRIES + 1):
@@ -57,7 +57,6 @@ async def get_github_status() -> dict[str, Any]:
                     )
                 else:
                     raise HTTPException(
-                        status_code=502,
                         detail=(
                             f"GitHub Status API returned HTTP error "
                             f"{status_code}: {exc}"
@@ -80,6 +79,8 @@ async def get_github_status() -> dict[str, Any]:
  
             if attempt < MAX_RETRIES:
                 await asyncio.sleep(RETRY_DELAY_SECONDS)
+ 
+    assert last_error_detail is not None
  
     raise HTTPException(
         status_code=503,
