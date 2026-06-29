@@ -9,7 +9,6 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard] (>=0.138.0,<0.139.0)",
-    "requests (>=2.34.2,<3.0.0)",
     "httpx (>=0.28.1,<0.29.0)"
 ]
 license = {text = "Apache-2.0"}
