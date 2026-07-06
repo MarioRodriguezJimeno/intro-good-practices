@@ -68,7 +68,7 @@ jobs:
         run: poetry run ruff check .
 
       - name: Run Flake8
-        run: poetry run pflake8 .
+        run: poetry run pflake8 --max-line-length=88 .
 
       - name: Run Bandit
         run: poetry run bandit -c pyproject.toml -r .
