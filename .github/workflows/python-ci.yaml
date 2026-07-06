@@ -1,0 +1,148 @@
+name: Python Check
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+      - ".github/workflows/python-ci.yaml"
+      - "**/Dockerfile"
+      - "docker-compose*.yml"
+
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - edited
+      - reopened
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "poetry.lock"
+      - ".github/workflows/python-ci.yaml"
+      - "**/Dockerfile"
+      - "docker-compose*.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  python-check:
+    name: Python Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: "poetry"
+
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 2.4.1
+          virtualenvs-create: true
+          virtualenvs-in-project: false
+          installer-parallel: true
+
+      - name: Install dependencies
+        run: poetry install --with dev --no-interaction --no-root
+
+      - name: Run Black
+        run: poetry run black --check .
+
+      - name: Run Ruff
+        run: poetry run ruff check .
+
+      - name: Run Flake8
+        run: poetry run pflake8 .
+
+      - name: Run Bandit
+        run: poetry run bandit -c pyproject.toml -r .
+
+      - name: Run Trivy vulnerability scan
+        id: trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          scanners: "vuln"
+          severity: "LOW,MEDIUM,HIGH,CRITICAL"
+          format: "table"
+          output: "trivy-results.txt"
+          exit-code: "1"
+
+      - name: Upload Trivy report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: trivy-report
+          path: trivy-results.txt
+          if-no-files-found: warn
+
+      - name: Write Trivy summary
+        if: always()
+        run: |
+          echo "## Trivy vulnerability report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f trivy-results.txt ]; then
+            echo '```text' >> "$GITHUB_STEP_SUMMARY"
+            cat trivy-results.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No Trivy report was generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Run OSV Scanner
+        id: osv
+        uses: google/osv-scanner-action/osv-scanner-action@v2.3.8
+        continue-on-error: true
+        with:
+          scan-args: |-
+            --recursive ./
+            --format=json
+            --output=osv-results.json
+
+      - name: Upload OSV report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: osv-report
+          path: osv-results.json
+          if-no-files-found: warn
+
+      - name: Write OSV summary
+        if: always()
+        run: |
+          echo "## OSV Scanner vulnerability report" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f osv-results.json ]; then
+            echo '```json' >> "$GITHUB_STEP_SUMMARY"
+            cat osv-results.json >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No OSV report was generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Fail if vulnerability scanners failed
+        if: ${{ steps.trivy.outcome == 'failure' || steps.osv.outcome == 'failure' }}
+        run: |
+          echo "At least one vulnerability scanner detected issues or failed."
+          exit 1
