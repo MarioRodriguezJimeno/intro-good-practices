@@ -37,7 +37,8 @@ The agent must never:
 - Copy it into generated deliverables.
 - Expose confidential customer information.
 - Reuse customer architectures without authorization.
-- Include raw extraction files in the repository.
+- Include raw or unsanitized extraction files in the repository.
+- Reviewed and sanitized Markdown copies may be committed under `docs/automation-framework/` when explicitly requested.
 - Reveal local working documents stored in `reference-private/`.
 
 Files inside `reference-private/` are local analysis material and must remain ignored by Git.
@@ -927,3 +928,41 @@ Every promotion is based on a validated immutable artefact, automated testing, t
 - Visible promotion gate.
 - Small supporting message below the pipeline.
 - Corporate footer and approved logos.
+
+## 40. Diagram-first workflow
+
+For slides that explain pipelines, architectures, governance lifecycles or technical relationships, validate the content structure before creating the final PowerPoint design.
+
+Recommended workflow:
+
+1. Extract the relevant technical information.
+2. Identify the principal message of the slide.
+3. Define the components, sequence, relationships and decision points.
+4. Create a structured diagram, preferably using Mermaid.
+5. Render and review the diagram visually.
+6. Correct technical errors, bypassed gates, unclear relationships and excessive text.
+7. Apply the corporate PowerPoint styling only after the diagram content has been validated.
+
+Mermaid should be treated as an intermediate representation, not as the final PowerPoint design.
+
+### Mermaid diagram rules
+
+- Use Mermaid to validate processes, pipelines and architectural relationships.
+- Prefer a left-to-right flow for CI/CD/CT pipelines.
+- Keep node text concise and readable.
+- Use `<br/>` for line breaks inside Mermaid nodes.
+- Separate pipeline stages, controls, governance and business value when appropriate.
+- Use decision nodes for mandatory gates.
+- Show failed paths and blocking conditions explicitly.
+- Do not create direct connections that bypass mandatory gates.
+- Mark unsupported or ambiguous relationships as `Requires NTT DATA validation`.
+- Review the rendered diagram before including it in a presentation.
+- Export the validated diagram as SVG when it will be inserted into PowerPoint.
+- Apply decorative colors and styles only after validating the technical structure.
+
+### CI/CD/CT diagram sequence
+
+For a complete CI/CD/CT lifecycle diagram, use this principal sequence:
+
+```text
+Validate -> Build -> Secure -> Push -> Deploy -> Test -> Mandatory gates decision
