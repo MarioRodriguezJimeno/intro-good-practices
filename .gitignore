@@ -218,3 +218,7 @@ __marimo__/
  
 # Streamlit
 .streamlit/secrets.toml
+
+# Archivos privados del proyecto PPT Maker
+reference-private/
+AutomationFramework-Orion.pptx
